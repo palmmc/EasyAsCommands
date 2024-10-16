@@ -101,11 +101,20 @@ def edit_commands_config(key, value):
     write_commands_config(config)
 
 
-def reset_commands(self: Plugin):
+def reset_commands(self: Plugin, player: Player):
     write_commands_config(default_data)
     global commandData
     commandData = default_data
     self.logger.info("Commands configuration has been reset to default.")
+    send_custom(
+        player,
+        f"§cReset Complete!\n§eServer has been reloaded successfully!",
+    )
+    try:
+        self.server.reload()
+    except Exception as e:
+        error_custom(player, f"Failed to reload server: {e}")
+        return
 
 
 ### EXTRA UTILITIES ###

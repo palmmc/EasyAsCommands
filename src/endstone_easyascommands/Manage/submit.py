@@ -13,10 +13,7 @@ def submit_command(self: Plugin, player: Player, command):
         error_custom(player, "Incomplete command: Property '§4name§c' is missing.")
         return
     if "description" not in command:
-        error_custom(
-            player, "Incomplete command: Property '§4description§c' is missing."
-        )
-        return
+        command["description"] = "New command."
     if "usages" not in command:
         error_custom(player, "Incomplete command: Property '§4usages§c' is missing.")
         return

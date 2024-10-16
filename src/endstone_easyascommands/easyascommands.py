@@ -23,7 +23,7 @@ class EasyAsCommands(Plugin):
     commandData["commands"]["commands"] = {
         "description": "Opens command manager.",
         "usages": ["/commands"],
-        "aliases": ["cmds"],
+        "aliases": ["cmds", "cmdmanager", "commandmanager"],
         "permissions": ["easyas.command.manager"],
     }
     commandData["commands"]["resetcommands"] = {
@@ -83,7 +83,7 @@ class EasyAsCommands(Plugin):
             command_manager(self, player)
             return
         elif command.name == "resetcommands":
-            reset_commands(self)
+            reset_commands(self, player)
             return
         if command.name not in self.commandData["functions"]:
             send_custom(
