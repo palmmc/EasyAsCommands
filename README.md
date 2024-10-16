@@ -14,7 +14,7 @@ A plugin for [Endstone](https://github.com/EndstoneMC/endstone) that allows you 
 3) Restart or reload your server. Enjoy!
 
 ### Demo
-<img src="./images/demo.png?raw=true">
+<img src="./images/mdemo.png?raw=true">
 
 # Features
 - ## Manager UI
