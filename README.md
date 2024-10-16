@@ -30,9 +30,9 @@ A plugin for [Endstone](https://github.com/EndstoneMC/endstone) that allows you 
 ### *Using In-Game UI*
 1) With **operator** or the `easyas.command.manager` permission, run the `/commands` command.
 2) This is where you can add, remove, and edit existing commands.
-   - Next click "Add Command"
+   - Next click 'Add Command'.
 3) Here you can configure all of the different attributes of your command.
-   - For more information, refer to our wiki page, [Command Attributes](../../wiki/Command-Attributes).
+   - For more information, refer to the wiki page, [Command Attributes](../../wiki/Command-Attributes).
    - Try creating the following command:
      - Set the name to '`star`'.
      - Add a new usage '`/star`'.
@@ -53,6 +53,7 @@ Once done, save the file and reload/restart your server for the changes to take 
 
 ### 🥳 Congratulations!
 You've created your first command!
+
 I hope you find this plugin useful! Enjoy!
 
 # Feature Roadmap
