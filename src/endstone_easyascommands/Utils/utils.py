@@ -7,7 +7,7 @@ from endstone._internal.endstone_python import Player
 from endstone.plugin import Plugin
 
 
-prefix = "§l§f[§aEAC§f]§r >> "
+prefix = "§l§f[§aEA§6C§f]§r >> "
 
 
 def send_custom(player: Player, message: str):
