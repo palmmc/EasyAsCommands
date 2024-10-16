@@ -65,6 +65,7 @@ Reset command|✅
 Documentation|🔷
 Placeholder Support|🔷
 More Execution Types|🔶
+Conditions|🔶
 Developer API|🔶
 Addon Integration|🔶
 
