@@ -40,6 +40,7 @@ A plugin for [Endstone](https://github.com/EndstoneMC/endstone) that allows you 
    - After that, scroll to the bottom and click **Functionality**.
 4) This is where you can make the command *do* something when it is executed. Let's do a simple example.
    - Click 'Add Execution', and type '`give "{player}" nether_star 1`'.
+   - If you want to learn more about functionality, see the wiki page [Functionality](../../wiki/Functionality).
    - When you are finished, hit **Submit**, then back out again to the main editor.
 5) Click **Submit**, and your server will reload to apply your new command.
 6) Now run `/star`; you should be given a nether star.
