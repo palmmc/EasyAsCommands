@@ -48,7 +48,7 @@ class EasyAsCommands(Plugin):
             "default": True,
         },
         "easyas.command.op": {
-            "description": "Only ops can use this.",
+            "description": "Only operators can use this.",
             "default": "op",
         },
     }

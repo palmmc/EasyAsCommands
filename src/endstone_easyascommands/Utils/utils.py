@@ -32,7 +32,6 @@ default_data = {
     "functions": {"helloworld": ["say Hello, {0} {1}!", 'give "{player}" diamond 1']},
 }
 
-
 ### COMMAND CONFIGURATION MANAGEMENT ###
 
 # Define the path to the JSON file
