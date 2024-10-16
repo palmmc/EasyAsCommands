@@ -48,7 +48,7 @@ A plugin for [Endstone](https://github.com/EndstoneMC/endstone) that allows you 
 1) For more advanced users, a more efficient approach is to edit the JSON directly.
 To start, navigate to your `/bedrock_server/config/` folder; the `/config/` folder should be in the same directory as your `/plugins/` folder.
 2) Open `command_manager.json` in your choice of text editor. You don't need anything fancy; Notepad will do.
-3) Begin editing. Refer to the [Wiki](../../wiki/JSON-Arguments) for available arguments.
+3) Begin editing. Refer to the wiki page [JSON Arguments](../../wiki/JSON-Arguments) for available arguments.
 Once done, save the file and reload/restart your server for the changes to take effect.
 
 ### 🥳 Congratulations!
