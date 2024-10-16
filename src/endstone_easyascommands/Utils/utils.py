@@ -18,30 +18,13 @@ def error_custom(player: Player, message: str):
     player.send_message(prefix + "§cError: " + message)
 
 
-"""
-Format:
-{
-    "commands": {
-        "helloworld": {
-            "description": "Example command.",
-            "usages": ["/helloworld <message: str> <message2: str>"],
-            "aliases": ["hello", "hi"],
-            "permissions": ["easyas.command.all"],
-        }
-    },
-    "functions": {
-        "helloworld": ["say Hello, {0} {1}!", 'give "{player}" diamond 1']
-    }
-}
-"""
-
 ### DEFAULT COMMAND DATA CONFIGURATION ###
 
 default_data = {
     "commands": {
         "helloworld": {
             "description": "Example command.",
-            "usages": ["/helloworld <message: str> <message2: str>"],
+            "usages": ["/helloworld <message: str> <amount: int>"],
             "aliases": ["hello", "hi"],
             "permissions": ["easyas.command.all"],
         }
