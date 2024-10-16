@@ -383,13 +383,14 @@ def manage_functionality(self: Plugin, player: Player, command):
     functions = commandData["functions"]
     if command["name"] in functions:
         for func in functions[command["name"]]:
-            form.button(strip_color_codes(func))
+            line = func["type"] + ": " + func["content"]
+            form.button(strip_color_codes(line))
 
     def submit(self: Plugin, player: Player, result: ActionFormResponse, command):
         if result.canceled:
             return edit_command(self, player, command)
         if result.selection == 0:
-            add_functionality(self, player, command)
+            select_functionality(self, player, command)
         elif result.selection == 1:
             remove_functionality(self, player, command)
         else:
@@ -402,26 +403,56 @@ def manage_functionality(self: Plugin, player: Player, command):
     )
 
 
-def add_functionality(self: Plugin, player: Player, command):
-    form = ModalFormData()
-    form.title("Add Execution")
-    form.text_field(
-        "Enter a command for the server to run when executed.", "say Hello, {0} {1}!"
+def select_functionality(self: Plugin, player: Player, command):
+    form = ActionFormData()
+    form.title("Select Execution")
+    form.body("Select an execution type:")
+    form.button("Command")
+
+    def submit(self: Plugin, player: Player, result: ActionFormResponse, command):
+        if result.canceled:
+            return manage_functionality(self, player, command)
+        if result.selection == 0:
+            add_functionality(self, player, command, result.selection)
+
+    form.show(player).then(
+        lambda player=Player, response=ActionFormResponse: submit(
+            self, player, response, command
+        )
     )
 
-    def submit(self: Plugin, player: Player, result: ModalFormResponse, command):
+
+def add_functionality(self: Plugin, player: Player, command, type):
+    form = ModalFormData()
+    form.title("Add Execution")
+    extype = "missing"
+    if type == 0:
+        extype = "command"
+        form.text_field(
+            "Enter a command for the server to run when executed.",
+            "say Hello, {0} {1}!",
+        )
+
+    def submit(
+        self: Plugin, player: Player, result: ModalFormResponse, command, extype
+    ):
         if result.canceled:
             return manage_functionality(self, player, command)
         commandData = read_commands_config()
         if command["name"] not in commandData["functions"]:
             commandData["functions"][command["name"]] = []
-        commandData["functions"][command["name"]].append(result.formValues[0])
+        if extype == "command":
+            commandData["functions"][command["name"]].append(
+                {"type": "command", "content": result.formValues[0]}
+            )
+        else:
+            return self.logger.error("Invalid execution type.")
         write_commands_config(commandData)
         manage_functionality(self, player, command)
 
     form.show(player).then(
         lambda player=Player, response=ModalFormResponse: submit(
-            self, player, response, command
+            self, player, response, command, extype
         )
     )
 
@@ -435,7 +466,8 @@ def remove_functionality(self: Plugin, player: Player, command):
     if command["name"] not in functions:
         return manage_functionality(self, player, command)
     for func in functions[command["name"]]:
-        form.button(strip_color_codes(func))
+        line = func["type"] + ": " + func["content"]
+        form.button(strip_color_codes(line))
 
     def submit(self: Plugin, player: Player, result: ActionFormResponse, command):
         if result.canceled:
@@ -457,12 +489,25 @@ def edit_functionality(self: Plugin, player: Player, command, index):
     functions = commandData["functions"][command["name"]]
     form = ModalFormData()
     form.title("Edit Execution")
-    form.text_field("Execution", functions[index], functions[index])
+    extype = "missing"
+    if functions[index]["type"] == "command":
+        extype = "command"
+        form.text_field(
+            "Enter a command for the server to run when executed.",
+            functions[index]["content"],
+            functions[index]["content"],
+        )
 
     def submit(self: Plugin, player: Player, result: ModalFormResponse, command, index):
         if result.canceled:
             return manage_functionality(self, player, command)
-        commandData["functions"][command["name"]][index] = result.formValues[0]
+        if extype == "command":
+            commandData["functions"][command["name"]][index] = {
+                "type": "command",
+                "content": result.formValues[0],
+            }
+        else:
+            return self.logger.error("Invalid execution type.")
         write_commands_config(commandData)
         manage_functionality(self, player, command)
 

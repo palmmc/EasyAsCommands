@@ -29,7 +29,12 @@ default_data = {
             "permissions": ["easyas.command.all"],
         }
     },
-    "functions": {"helloworld": ["say Hello, {0} {1}!", 'give "{player}" diamond 1']},
+    "functions": {
+        "helloworld": [
+            {"type": "command", "content": "say Hello, {0}!"},
+            {"type": "command", "content": 'give "{player}" diamond {1}'},
+        ]
+    },
 }
 
 ### COMMAND CONFIGURATION MANAGEMENT ###

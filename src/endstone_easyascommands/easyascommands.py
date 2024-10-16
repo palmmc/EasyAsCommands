@@ -92,7 +92,11 @@ class EasyAsCommands(Plugin):
             )
             return
         function = self.commandData["functions"][command.name]
-        for line in function:
+        for func in function:
+            if func["type"] == "command":
+                line = func["content"]
+            else:
+                return self.logger.error("Invalid execution: " + func["type"])
             try:
                 line = self.replace_score_placeholders(line)
                 if "{player}" in line:
