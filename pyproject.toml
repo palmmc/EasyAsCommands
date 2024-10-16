@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling<=1.18.0"]  
+build-backend = "hatchling.build"
+
+[project]
+name = "endstone_easyascommands"
+version = "0.1.0"
+dependencies = []
+authors = [
+    { name = "palm1" },
+]
+description = "Endstone Commands Plugin for the EasyAs suite."
+readme = "README.md"
+license = { file = "LICENSE" }
+keywords = ["endstone", "easyas", "commands", "server"]
+
+[project.urls]
+Homepage = "https://github.com/palmmc/EasyAsCommands"
+
+[project.entry-points."endstone"]
+easyascommands = "endstone_easyascommands:EasyAsCommands"
