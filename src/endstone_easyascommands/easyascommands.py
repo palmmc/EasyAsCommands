@@ -1,15 +1,18 @@
+import typing
+
+import json
 from .manager import command_manager
 from .Utils.utils import read_commands_config, error_custom, reset_commands, send_custom
 from endstone._internal.endstone_python import (
     ColorFormat,
     Player,
-    RenderType,
 )
 from endstone.command import Command, CommandSender
 from endstone.event import event_handler
 from endstone.plugin import Plugin
+from .API.integrations import APIHandler
+from .API.types import ExecutionTypes, PlaceholderTypes
 import re
-import json
 
 
 class EasyAsCommands(Plugin):
@@ -71,6 +74,8 @@ class EasyAsCommands(Plugin):
         self.logger.info(
             f"\n> {ColorFormat.DARK_BLUE}{ColorFormat.BOLD}Welcome to EasyAsCommands!{ColorFormat.RESET}\n> {ColorFormat.YELLOW}API Version: {self.api_version}{ColorFormat.RESET}\n> {ColorFormat.LIGHT_PURPLE}For help and updates, visit [ {ColorFormat.BLUE}https://github.com/palmmc/EasyAsCommands {ColorFormat.LIGHT_PURPLE}]{ColorFormat.RESET}"
         )
+        # Begin task.
+        APIHandler.discover_integrations(self)
 
     def on_command(self, sender: CommandSender, command: Command, args: list[str]):
         # You can also handle commands here instead of setting an executor in on_enable if you prefer
@@ -93,21 +98,31 @@ class EasyAsCommands(Plugin):
             return
         function = self.commandData["functions"][command.name]
         for func in function:
-            if func["type"] == "command":
-                line = func["content"]
-            else:
-                return self.logger.error("Invalid execution: " + func["type"])
+            line = func["content"]
             try:
+                # Score Placeholders
                 line = self.replace_score_placeholders(line)
+                # Player Placeholder
                 if "{player}" in line:
                     line = line.replace("{player}", player.name)
                 i = 0
+                # Argument Placeholders
                 for arg in args:
                     if ("{" + str(i) + "}") in line:
                         line = line.replace("{" + str(i) + "}", arg)
                     i += 1
-                self.logger.info(line)
-                server.dispatch_command(server.command_sender, line)
+                # Custom Placeholders
+                for placeholder in PlaceholderTypes.get_types():
+                    if "{" + placeholder + "}" in line:
+                        line = line.replace(
+                            "{" + placeholder + "}",
+                            PlaceholderTypes.get_placeholder(placeholder)(player, args),
+                        )
+
+                if func["type"] == "command":
+                    server.dispatch_command(server.command_sender, line)
+                else:
+                    ExecutionTypes.get_execution(func["type"])(player, line, args)
             except Exception as e:
                 server.logger.error(f"Error: {e}")
                 error_custom(

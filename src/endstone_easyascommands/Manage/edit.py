@@ -11,6 +11,7 @@ from ..form_wrapper import (
     ModalFormResponse,
 )
 from endstone._internal.endstone_python import Player
+from ..API.types import ExecutionTypes
 
 
 def edit_command(self: Plugin, player: Player, command):
@@ -408,11 +409,13 @@ def select_functionality(self: Plugin, player: Player, command):
     form.title("Select Execution")
     form.body("Select an execution type:")
     form.button("Command")
+    for type in ExecutionTypes.get_types():
+        form.button(type)
 
     def submit(self: Plugin, player: Player, result: ActionFormResponse, command):
         if result.canceled:
             return manage_functionality(self, player, command)
-        if result.selection == 0:
+        else:
             add_functionality(self, player, command, result.selection)
 
     form.show(player).then(
@@ -422,37 +425,32 @@ def select_functionality(self: Plugin, player: Player, command):
     )
 
 
-def add_functionality(self: Plugin, player: Player, command, type):
+def add_functionality(self: Plugin, player: Player, command, type: int):
     form = ModalFormData()
     form.title("Add Execution")
-    extype = "missing"
     if type == 0:
-        extype = "command"
         form.text_field(
             "Enter a command for the server to run when executed.",
             "say Hello, {0} {1}!",
         )
+    else:
+        form.text_field("Enter content to be parsed when executed.", "{0} {1}")
 
-    def submit(
-        self: Plugin, player: Player, result: ModalFormResponse, command, extype
-    ):
+    def submit(self: Plugin, player: Player, result: ModalFormResponse, command, type):
         if result.canceled:
             return manage_functionality(self, player, command)
         commandData = read_commands_config()
         if command["name"] not in commandData["functions"]:
             commandData["functions"][command["name"]] = []
-        if extype == "command":
-            commandData["functions"][command["name"]].append(
-                {"type": "command", "content": result.formValues[0]}
-            )
-        else:
-            return self.logger.error("Invalid execution type.")
+        commandData["functions"][command["name"]].append(
+            {"type": type, "content": result.formValues[0]}
+        )
         write_commands_config(commandData)
         manage_functionality(self, player, command)
 
     form.show(player).then(
         lambda player=Player, response=ModalFormResponse: submit(
-            self, player, response, command, extype
+            self, player, response, command, ExecutionTypes.get_types()[type - 1]
         )
     )
 
@@ -489,11 +487,15 @@ def edit_functionality(self: Plugin, player: Player, command, index):
     functions = commandData["functions"][command["name"]]
     form = ModalFormData()
     form.title("Edit Execution")
-    extype = "missing"
     if functions[index]["type"] == "command":
-        extype = "command"
         form.text_field(
             "Enter a command for the server to run when executed.",
+            functions[index]["content"],
+            functions[index]["content"],
+        )
+    else:
+        form.text_field(
+            "Enter content to be parsed when executed.",
             functions[index]["content"],
             functions[index]["content"],
         )
@@ -501,13 +503,10 @@ def edit_functionality(self: Plugin, player: Player, command, index):
     def submit(self: Plugin, player: Player, result: ModalFormResponse, command, index):
         if result.canceled:
             return manage_functionality(self, player, command)
-        if extype == "command":
-            commandData["functions"][command["name"]][index] = {
-                "type": "command",
-                "content": result.formValues[0],
-            }
-        else:
-            return self.logger.error("Invalid execution type.")
+        commandData["functions"][command["name"]][index] = {
+            "type": functions[index]["type"],
+            "content": result.formValues[0],
+        }
         write_commands_config(commandData)
         manage_functionality(self, player, command)
 
