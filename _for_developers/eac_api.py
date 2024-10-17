@@ -55,10 +55,59 @@ class EasyPlaceholder:
 
 
 class CommandManager:
+    """
+    The CommandManager class is an API for developers to easily manage and add functionality to **EasyAsCommands**.
+
+    ### Example
+    ```python
+    from endstone._internal.endstone_python import Player
+    from .eac_api import CommandManager
+
+    class EAC(CommandManager):
+        def __init__(self):
+            super().__init__()
+
+            self.commands.register(
+                "jellydonut",
+                "This is a test command.",
+                ["/jellydonut <count: int>"],
+                ["easyas.command.all"],
+                ["jd"],
+                [
+                    {
+                        "type": "donut_example",
+                        "content": "{donut_count}!",
+                    }
+                ],
+            )
+            self.placeholders.register("donut_count", example_placeholder)
+            self.executions.register("donut_example", example_execution)
+
+    def example_placeholder(player: Player, args):
+        if len(args) == 0:
+            return "0 donuts"
+        else:
+            return f"{args[0]} donuts"
+
+    def example_execution(player: Player, content: str, args):
+        player.send_message(f"§9How many donuts? §c{content}")
+
+    ```
+    """
+
     def __init__(self):
         self.commands = self.SlashCommandManager(self)
+        """
+        Contains command-based methods.
+        """
         self.executions = self.ExecutionManager(self)
+        """
+        Contains execution-based methods.
+        """
         self.placeholders = self.PlaceholderManager(self)
+        """
+        Contains placeholder-based methods.
+        """
         self._commands = []
         self._executions = []
         self._placeholders = []
@@ -66,6 +115,9 @@ class CommandManager:
     class SlashCommandManager:
         def __init__(self, command_manager):
             self.manager: CommandManager = command_manager
+            """
+            CommandManager object.
+            """
 
         def register(
             self,
@@ -76,6 +128,9 @@ class CommandManager:
             aliases: list[str] = [],
             functionality: list[SimpleFunctionality] = [],
         ):
+            """
+            Registers a slash command that can be managed by EasyAsCommands.
+            """
             self.manager._commands.append(
                 EasySlashCommand(
                     name, description, usages, permission, aliases, functionality
@@ -85,19 +140,31 @@ class CommandManager:
     class ExecutionManager:
         def __init__(self, command_manager):
             self.manager: CommandManager = command_manager
+            """
+            CommandManager object.
+            """
 
         def register(
             self, name: str, callback: typing.Callable[[Player, str, list[str]], None]
         ):
+            """
+            Registers an execution type for use in commands.
+            """
             self.manager._executions.append(EasyExecution(name, callback))
 
     class PlaceholderManager:
         def __init__(self, command_manager):
             self.manager: CommandManager = command_manager
+            """
+            CommandManager object.
+            """
 
         def register(
             self,
             identifier: str,
             callback: typing.Callable[[Player, list[str]], str],
         ):
+            """
+            Registers a placeholder for use in commands.
+            """
             self.manager._placeholders.append(EasyPlaceholder(identifier, callback))
