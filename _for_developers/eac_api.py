@@ -98,15 +98,15 @@ class CommandManager:
     def __init__(self):
         self.commands = self.SlashCommandManager(self)
         """
-        Contains command-based methods.
+        Contains methods for managing commands.
         """
         self.executions = self.ExecutionManager(self)
         """
-        Contains execution-based methods.
+        Contains methods for managing execution types.
         """
         self.placeholders = self.PlaceholderManager(self)
         """
-        Contains placeholder-based methods.
+        Contains methods for managing placeholders.
         """
         self._commands = []
         self._executions = []
@@ -124,7 +124,7 @@ class CommandManager:
             name: str,
             description: str,
             usages: list[str],
-            permission: list[str] = "easyas.command.op",
+            permissions: list[str] = ["easyas.command.op"],
             aliases: list[str] = [],
             functionality: list[SimpleFunctionality] = [],
         ):
@@ -133,7 +133,7 @@ class CommandManager:
             """
             self.manager._commands.append(
                 EasySlashCommand(
-                    name, description, usages, permission, aliases, functionality
+                    name, description, usages, permissions, aliases, functionality
                 )
             )
 
