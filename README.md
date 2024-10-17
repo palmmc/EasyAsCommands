@@ -10,6 +10,12 @@
 # EasyAsCommands
 A plugin for [Endstone](https://github.com/EndstoneMC/endstone) that allows you to setup your own slash commands without any programming!
 
+## ⚠️ Experimental Integration Support
+### As of Beta `0.2.0`+
+> This plugin uses an experimental feature that discovers integrations in other plugins by **scanning their main scripts** for its API class.
+> <br>If you find this feature invasive, I recommend you do not use this plugin.
+> <br>If you would like to add EAC integration to your plugin, see the [API Documentation](/_for_developers/README.md).
+
 # Installation
 1) Download the latest [release](../../releases).
 2) Drag and drop both files ending with `.whl` into your Endstone plugin folder.
