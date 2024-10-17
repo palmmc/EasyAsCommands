@@ -1,129 +1,115 @@
----
+***
+# EasyAsCommands API
+**EasyAsCommands** has its own API that developers can include in their plugins to integrate their plugin with EAC.
 
-# EasyAsPermissions API
-
-**EasyAsPermissions** has its own API that developers can include in their plugins to use its features.
-
----
-
+***
 ## Adding to Plugin
-
-1. Download `eap_api.py` latest [release](../../../releases/).
-2. Drop it into your plugin at the same level as your entry point script.
-3. Add the following import to the top of your script:
+1) Download `eac_api.py` latest [release](../../../releases/).
+2) Drop it into your plugin at the same level as your entry point script.
+3) Add the following import to the top of your script:
    <br><br>
    ```python
-   from .eap_api.py import PermissionsManager
+   from .eac_api import CommandManager
    ```
-4. And you're done!
-
----
-
+4) Now set up your `CommandManager` class similarly to your plugin class.
+   <br><br>
+   ```python
+   from .eac_api import CommandManager
+   
+   class EAC(CommandManager):
+       def __init__(self):
+           super().__init__()
+       # Registry methods should be initialized.
+   # Everything else can go wherever.
+   ```
+5) And you're done!
+***
 # Usage
+The API includes many useful implementations, especially for registering types to integrate your plugin into EAC.
 
-The API includes many useful implementations that can be used to manage player permissions.
-
-Here is a list of all of available methods and attributes that can be used:
-
-# `class` PermissionsManager
-
-Parent class for permissions management.
+Here is a list of all available methods and attributes that can be used:
+# `class` CommandManager
+Parent class for command management.
 
 #### `Example:`
-
 ```python
-from .eap_api import PermissionsManager
-
-class MyPlugin(Plugin):
-    manager = PermissionsManager(self)
+   from .eac_api import CommandManager
+   
+   class EAC(CommandManager):
+       def __init__(self):
+           super().__init__()
 ```
 
-- ## `attr` players
-
-  > Contains player-based permission methods.
-
-  - ### `def` add_permission_to_player
-    > #### `player: Player`, `permission: str`
-    >
-    > Grants a permission to a player.
-  - ### `def` remove_permission_from_player
-    > #### `player: Player`, `permission: str`
-    >
-    > Revokes a permission from a player.
-  - ### `def` add_role_to_player
-    > #### `player: Player`, `role: str`
-    >
-    > Applies a player to a role, granting them all associated permissions.
-  - ### `def` remove_role_from_player
-    > #### `player: Player`, `role: str`
-    >
-    > Removes a player from a role, revoking all associated permissions.
-
+- ## `attr` commands
+  > Contains methods for managing commands.
+  - ### `def` register
+    > #### `name: str`, `description: str`, `usages: list[str]`, `permissions?: list[str]`, `aliases?: list[str]`, `functionality?: list[{type: str, content: str}]`
+    > 
+    > Registers a slash command that can be managed by EasyAsCommands.
   ### `example.py`
-
   ```python
-  ## Registering Permissions ##
-  def example_create_permission(self: Plugin, player: Player):
-      manager.permissions.set_permission(
-          "example.permission", "Example permission.", "op"
-      )
-      player.send_message("Permission created.")
+  ## Registering a Command ##
+    class EAC(CommandManager):
+        def __init__(self):
+            super().__init__()
+
+            self.commands.register(
+                "jellydonut",
+                "This is a test command.",
+                ["/jellydonut <count: int>"],
+                ["easyas.command.all"],
+                ["jd"],
+                [
+                    {
+                        "type": "donut_example",
+                        "content": "{donut_count}!",
+                    }
+                ],
+            )
   ```
 
-- ## `attr` permissions
-
-  > Contains methods for managing permissions.
-
-  - ### `def` set_permission
-    > #### `name: str`, `description?: str`, `default?: str`
-    >
-    > Registers or updates a permission with the given name, description, and default access level.
-  - ### `def` delete_permission
-    > #### `name: str`
-    >
-    > Deletes a permission.
-
+- ## `attr` executions
+  > Contains methods for managing executions.
+  - ### `def` register
+    > #### `name: str`, `callback: Callable[[Player, str, list[str]], None]`
+    > 
+    > Registers an execution type for use in commands.
   ### `example.py`
-
   ```python
-  ## Adding Permissions to Players ##
-  def example_add_permission(self: Plugin, player: Player):
-      manager.players.add_permission_to_player(player, "example.permission")
-      player.send_message("Permission added to player.")
+  ## Registering an Execution Type ##
+    class EAC(CommandManager):
+        def __init__(self):
+            super().__init__()
+
+            self.executions.register("donut_example", example_execution)
+
+    def example_execution(player: Player, content: str, args):
+        player.send_message(f"§9How many donuts? §c{content}")
   ```
 
-- ## `attr` roles
-
-  > Contains methods for managing roles.
-
-  - ### `def` set_role
-    > #### `name: str`, `permissions: list[str]`, `players: list[str]`
-    >
-    > Registers or updates a role with the given name, permissions, and players.
-  - ### `def` delete_role
-    > #### `name: str`
-    >
-    > Deletes a role.
-  - ### `def` add_permission_to_role
-    > #### `role: str`, `permission: str`
-    >
-    > Adds a permission to a role.
-  - ### `def` remove_permission_from_role
-    > #### `role: str`, `permission: str`
-    >
-    > Removes a permission from a role.
+- ## `attr` placeholders
+  > Contains methods for managing placeholders.
+  - ### `def` register
+    > #### `identifier: str`, `callback: Callable[[Player, list[str]], str]`
+    > 
+    > Registers a placeholder for use in commands.
 
   ### `example.py`
-
   ```python
-  ## Using Roles ##
-  def example_role(self: Plugin, player: Player):
-      manager.roles.set_role("newrole", [], ["Vincent"])
-      manager.roles.add_permission_to_role("newrole", "example.permission")
-      manager.players.add_role_to_player(player, "newrole")
-      player.send_message("Role added to player.")
+  ## Registering a Placeholder ##
+    class EAC(CommandManager):
+        def __init__(self):
+            super().__init__()
+
+            self.placeholders.register("donut_count", example_placeholder)
+
+
+    def example_placeholder(player: Player, args):
+        if len(args) == 0:
+            return "0 donuts"
+        else:
+            return f"{args[0]} donuts"
+
   ```
-
----
-
+***
 `?` = Optional
